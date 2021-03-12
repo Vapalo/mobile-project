@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { SliderComponent, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import * as Location from "expo-location";
 import MapView, { Marker } from "react-native-maps";
 import Constants from "expo-constants";
+import { Header } from "react-native-elements";
 
 const Map = ({ navigation }) => {
   const initial = {
@@ -29,33 +30,52 @@ const Map = ({ navigation }) => {
           latitudeDelta: 0.0322,
           longitudeDelta: 0.0221,
         });
+        let response = await fetch(
+          `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${location.coords.latitude},${location.coords.longitude}&radius=3000&type=supermarket&key=${Constants.manifest.extra.key}`
+        );
+        let data = await response.json();
+        setMarkers(data);
       } catch (error) {
         console.log(error.message);
       }
     }
   };
-  const getPlaces = async () => {
-    let response = await fetch(
-      `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${region.latitude},${region.longitude}&radius=1500&type=supermarket&key=${Constants.manifest.extra.key}`
-    );
-    let data = await response.json();
-    setMarkers(data);
-  };
 
   useEffect(() => {
     getLocation();
-    getPlaces();
   }, []);
-  console.log(markers);
-  return (
-    <View style={styles.container}>
-      <MapView
-        style={{ height: "100%", width: "100%" }}
-        region={region}
-        showsUserLocation={true}
-      ></MapView>
-    </View>
-  );
+
+  if (Object.keys(markers).length !== 0) {
+    return (
+      <View style={styles.container}>
+        <Header
+          centerComponent={{
+            text: "Map",
+            style: { color: "#fff", fontSize: 20 },
+          }}
+        />
+        <MapView
+          style={{ flex: 1, width: "100%" }}
+          region={region}
+          showsUserLocation={true}
+        >
+          {markers.results.map((marker, index) => (
+            <Marker
+              key={index}
+              title={marker.name}
+              description={marker.vicinity}
+              coordinate={{
+                latitude: marker.geometry.location.lat,
+                longitude: marker.geometry.location.lng,
+              }}
+            />
+          ))}
+        </MapView>
+      </View>
+    );
+  } else {
+    return <Text>Hups</Text>;
+  }
 };
 
 export default Map;
