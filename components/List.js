@@ -90,7 +90,7 @@ export default function List({ navigation }) {
       <Header
         centerComponent={{
           text: "Shopping list",
-          style: { color: "#fff", fontSize: 25 },
+          style: { color: "#fff", fontSize: 20 },
         }}
       />
       <View style={styles.inputcontainer}>
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   },
   inputcontainer: {
     flexDirection: "column",
-    width: 200,
+    width: 250,
     marginTop: 20,
   },
   input: {
