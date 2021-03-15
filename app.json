@@ -27,6 +27,7 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "Shopping list application that stores items to database. Full CRUD functionality and a map that shows supermarkets in 3km range"
   }
 }
